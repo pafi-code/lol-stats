@@ -80,7 +80,7 @@ def _convert_participants_to_teams(
     red_team = []
     for participant in participants_as_json:
         summoner = _convert_participants_to_summoner_in_game(participant, my_puuid)
-        if summoner.team == data.TeamType.BLUE:
+        if summoner.team == data.TeamType.BLUE.value:
             blue_team.append(summoner)
         else:
             red_team.append(summoner)
