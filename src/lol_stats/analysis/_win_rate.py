@@ -2,7 +2,7 @@
 
 from lol_stats import data
 
-from . import _smurf_detection
+from . import _utils
 
 
 def get_general_win_rate(games: data.Games) -> float:
@@ -21,9 +21,7 @@ def get_general_win_rate(games: data.Games) -> float:
     """
     win_counter = 0
     for game in games.games:
-        if game.blue_team.is_my_team and game.blue_team.won:
-            win_counter += 1
-        if game.red_team.is_my_team and game.red_team.won:
+        if _utils.get_my_team(game).won:
             win_counter += 1
     return win_counter / len(games.games)
 
@@ -46,9 +44,9 @@ def get_win_rate_without_smurfs_in_game(games: data.Games) -> float:
     wins = 0
     loss = 0
     for game in games.games:
-        enemies = _get_enemy_team(game)
-        my_team = _get_my_team(game)
-        if not _is_smurf_in_enemy_team(enemies) and not _is_smurf_in_enemy_team(
+        enemies = _utils.get_enemy_team(game)
+        my_team = _utils.get_my_team(game)
+        if not _utils.is_smurf_in_team(enemies) and not _utils.is_smurf_in_team(
             my_team,
         ):
             if my_team.won:
@@ -76,8 +74,8 @@ def get_win_rate_against_smurfs(games: data.Games) -> float:
     wins = 0
     loss = 0
     for game in games.games:
-        enemies = _get_enemy_team(game)
-        if _is_smurf_in_enemy_team(enemies):
+        enemies = _utils.get_enemy_team(game)
+        if _utils.is_smurf_in_team(enemies):
             if enemies.won:
                 loss += 1
             else:
@@ -103,29 +101,10 @@ def get_win_rate_with_smurfs(games: data.Games) -> float:
     wins = 0
     loss = 0
     for game in games.games:
-        my_team = _get_my_team(game)
-        if _is_smurf_in_enemy_team(my_team):
+        my_team = _utils.get_my_team(game)
+        if _utils.is_smurf_in_team(my_team):
             if my_team.won:
                 wins += 1
             else:
                 loss += 1
     return wins / (wins + loss)
-
-
-def _get_my_team(game: data.Game) -> data.Team:
-    """Get my team."""
-    if game.blue_team.is_my_team:
-        return game.blue_team
-    return game.red_team
-
-
-def _get_enemy_team(game: data.Game) -> data.Team:
-    """Get the enemy team."""
-    if not game.blue_team.is_my_team:
-        return game.blue_team
-    return game.red_team
-
-
-def _is_smurf_in_enemy_team(team: data.Team) -> bool:
-    """Check if a smurf is in the enemy team."""
-    return any(_smurf_detection.is_smurf(summoner) for summoner in team.summoners)
