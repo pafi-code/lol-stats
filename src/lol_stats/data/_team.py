@@ -25,3 +25,7 @@ class Team(pydantic.BaseModel):
     @property
     def win(self) -> bool:
         return all(summoner.won for summoner in self.summoners)
+
+    @property
+    def my_team(self) -> bool:
+        return any(summoner.is_me for summoner in self.summoners)
