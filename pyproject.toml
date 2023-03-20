@@ -12,6 +12,8 @@ pydantic = "^1.10.6"
 python = "^3.10"
 riotwatcher = "^3.2.4"
 tqdm = "^4.65.0"
+matplotlib = "^3.7.1"
+seaborn = "^0.12.2"
 
 [tool.poetry.group.develop.dependencies]
 black = "^23.1.0"
