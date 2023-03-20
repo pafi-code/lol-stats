@@ -20,6 +20,32 @@ def get_games_by_summoner_puuid(
     amount: int,
     watcher: riotwatcher.RiotWatcher,
 ) -> data.Games:
+    """
+    Get games of a summoner given his puuid.
+
+    Parameters
+    ----------
+    puuid
+        The puuid of the summoner that we should query for.
+    region
+        The region where the summoner is playing.
+    amount
+        The number of games that should be queried.
+    watcher
+        The watcher that should be used to do the requests.
+
+
+    Returns
+    -------
+    data.Games
+        The games stored in an object.
+
+
+    Notes
+    -----
+    In the end there might be less game present, because aborted games
+    are getting ignored.
+    """
     game_ids = _query.query(
         watcher.match.matchlist_by_puuid,
         args=[region.value, puuid],
@@ -40,7 +66,7 @@ def get_games_by_summoner_puuid(
                 msg=f"Ignoring game id {game.metadata.match_id}. Game was aborted.",
             )
         else:
-        games.append(_convert_game_to_data(game_as_json, puuid))
+            games.append(_convert_game_to_data(game_as_json, puuid))
     return data.Games(games=games)
 
 
@@ -55,6 +81,7 @@ _PARTICIPANTS_KEY = "participants"
 
 
 def _convert_game_to_data(game_as_json: dict, my_puuid: str) -> data.Game:
+    """Convert dict to game object."""
     metadata_as_json = game_as_json[_METADATA_KEY]
     game_info_as_json = game_as_json[_INFO_KEY]
     metadata = data.GameMetadata(
@@ -68,7 +95,6 @@ def _convert_game_to_data(game_as_json: dict, my_puuid: str) -> data.Game:
         game_info_as_json[_PARTICIPANTS_KEY],
         my_puuid,
     )
-
     return data.Game(metadata=metadata, red_team=red_team, blue_team=blue_team)
 
 
@@ -76,6 +102,7 @@ def _convert_participants_to_teams(
     participants_as_json: dict,
     my_puuid: str,
 ) -> tuple[data.Team, data.Team]:
+    """Convert dict to teams."""
     blue_team = []
     red_team = []
     for participant in participants_as_json:
@@ -106,6 +133,7 @@ def _convert_participants_to_summoner_in_game(
     participant_as_json: dict,
     my_puuid: str,
 ) -> data.SummonerInGame:
+    """Convert dict to summoner."""
     champion_info = data.ChampionInfo(
         champion_id=participant_as_json[_CHAMPION_ID_KEY],
         champion_experience=participant_as_json[_CHAMPION_EXP_KEY],
