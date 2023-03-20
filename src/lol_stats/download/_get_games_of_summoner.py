@@ -3,12 +3,15 @@
 import riotwatcher
 import tqdm
 
-from lol_stats import data
+from lol_stats import data, logging
 
 from . import _query, _regions
 
 _AMOUNT_ARG = "count"
 _QUEUE_TYPE_ARG = "type"
+_TEN_MINUTES = 600
+
+_LOGGER = logging.create_colored_logger(__name__)
 
 
 def get_games_by_summoner_puuid(
@@ -31,6 +34,12 @@ def get_games_by_summoner_puuid(
             watcher.match.by_id,
             args=[region.value, game_id],
         )
+        game = _convert_game_to_data(game_as_json, puuid)
+        if game.metadata.game_duration <= _TEN_MINUTES:
+            _LOGGER.info(
+                msg=f"Ignoring game id {game.metadata.match_id}. Game was aborted.",
+            )
+        else:
         games.append(_convert_game_to_data(game_as_json, puuid))
     return data.Games(games=games)
 
