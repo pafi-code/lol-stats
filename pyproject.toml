@@ -1,0 +1,82 @@
+[tool.poetry]
+authors = ["Paul Fischer <paul_fischer94@hotmail.com>"]
+description = ""
+name = "lol-stats"
+packages = [{include = "lol_stats", from = "src"}]
+readme = "README.md"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+colorlog = "^6.7.0"
+pydantic = "^1.10.6"
+python = "^3.10"
+riotwatcher = "^3.2.4"
+tqdm = "^4.65.0"
+
+[tool.poetry.group.develop.dependencies]
+black = "^23.1.0"
+mypy = "^1.1.1"
+ruff = "^0.0.257"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[tool.ruff]
+fix = true
+line-length = 88
+select = [
+  "F",
+  "E",
+  "W",
+  "C90",
+  "I",
+  "N",
+  "D",
+  "UP",
+  "S",
+  "BLE",
+  "FBT",
+  "B",
+  "A",
+  "COM",
+  "C4",
+  "DTZ",
+  "EXE",
+  "ISC",
+  "INP",
+  "PT",
+  "T20",
+  "RET",
+  "SLF",
+  "SIM",
+  "TID",
+  "ERA",
+  "PD",
+  "PL",
+  "NPY",
+  "RUF",
+]
+src = ["src", "tests"]
+target-version = "py310"
+
+[tool.ruff.isort]
+known-first-party = ["src/lol_stats"]
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = false
+python_version = "3.10"
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "requests.*"
