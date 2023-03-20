@@ -23,9 +23,9 @@ class Team(pydantic.BaseModel):
         return sum(summoner.game_stats.deaths for summoner in self.summoners)
 
     @property
-    def win(self) -> bool:
+    def won(self) -> bool:
         return all(summoner.won for summoner in self.summoners)
 
     @property
-    def my_team(self) -> bool:
+    def is_my_team(self) -> bool:
         return any(summoner.is_me for summoner in self.summoners)
