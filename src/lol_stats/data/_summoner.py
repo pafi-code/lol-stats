@@ -20,6 +20,7 @@ class Role(enum.Enum):
     MID = "MIDDLE"
     TOP = "TOP"
     JUNGLE = "JUNGLE"
+    INVALID = ""
 
 
 class ChampionInfo(pydantic.BaseModel):
