@@ -5,7 +5,7 @@ import pathlib
 import pydantic
 from typing_extensions import Self
 
-from . import _team
+from . import _summoner, _team
 
 
 class GameMetadata(pydantic.BaseModel):
@@ -30,6 +30,14 @@ class Games(pydantic.BaseModel):
     """Collection of games."""
 
     games: list[Game]
+
+    @property
+    def all_summoners(self) -> list[_summoner.SummonerInGame]:
+        summoners = []
+        for game in self.games:
+            summoners.extend(game.blue_team.summoners)
+            summoners.extend(game.red_team.summoners)
+        return summoners
 
     def save(self, path: pathlib.Path) -> None:
         """
