@@ -5,7 +5,11 @@ import pathlib
 import pydantic
 from typing_extensions import Self
 
+from lol_stats import logging
+
 from . import _summoner, _team
+
+_LOGGER = logging.create_colored_logger(__name__)
 
 
 class GameMetadata(pydantic.BaseModel):
@@ -50,6 +54,7 @@ class Games(pydantic.BaseModel):
         """
         with path.open("w", encoding="utf-8") as stream:
             json.dump(self.dict(), stream, indent=2, ensure_ascii=False)
+        _LOGGER.info(f"Saved data at {path}.")
 
     @classmethod
     def load(cls, path: pathlib.Path) -> Self:
